@@ -1,7 +1,5 @@
 DECLARE
 sql_stmt long;
-
-
 BEGIN
     sql_stmt:='
     CREATE TABLE Table2 (
