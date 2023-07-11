@@ -42,36 +42,31 @@ jobs:
           echo "BUILDENVID=$BUILDENVID"
 
         
-          DEPLOYENVID=$(curl -k -s -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
+        DEPLOYENVID=$(curl -k -s -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
       
-      echo "ENVIRONMENT=$ENVIRONMENT"
+          echo "ENVIRONMENT=$ENVIRONMENT"
 
 
-      echo "DEPLOYENVID=$DEPLOYENVID"
+          echo "DEPLOYENVID=$DEPLOYENVID"
 
 
        # Runs a set of commands using the runners shell
       - name: Build
         run: |
 
-      WFID=$(curl -k -s -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -d '{"environmentId":"'"$BUILDENVID"'", "streamId":"'"$STRMID"'"}' -X POST http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/build | jq '.workflowRequests[] | .workflowRequestId')
+        WFID=$(curl -k -s -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -d '{"environmentId":"'"$BUILDENVID"'", "streamId":"'"$STRMID"'"}' -X POST http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/build | jq '.workflowRequests[] | .workflowRequestId')
 
-      CODE_BUILD=$(tail -n1 <<< "$WFID")
-      echo "Workflow ID $WFID"
+          CODE_BUILD=$(tail -n1 <<< "$WFID")
+          echo "Workflow ID $WFID"
 
-      STATUS=$(curl -k -s -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/workflowrequest/$CODE_BUILD | jq '.workflowRequestStatus')
 
-      while [[ "$STATUS" != "FAILED" || "$STATUS" != "COMPLETED" ]]; do
-      echo "Compiling..."
-      STATUS=$(curl -k -s -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/workflowrequest/$CODE_BUILD | jq '.workflowRequestStatus')
+         ST=$(echo $STATUS | tr -d '"')
+         if [[ "$ST" == "FAILED" ]]; then
+         echo "Build Failed."; exit 1 
+         elif [[ "$ST" == "COMPLETED" ]]; then
+         echo "Built."; exit 0
+         fi
+          sleep 10
 
-      ST=$(echo $STATUS | tr -d '"')
-      if [[ "$ST" == "FAILED" ]]; then
-      echo "Build Failed."; exit 1 
-      elif [[ "$ST" == "COMPLETED" ]]; then
-      echo "Built."; exit 0
-      fi
-      sleep 10
-
-      done
+done
 
