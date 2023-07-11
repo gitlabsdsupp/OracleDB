@@ -29,20 +29,20 @@ jobs:
       - name: var_setup
         run: |
 
-        PRJID=$(curl -k -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -X GET "http://srvld20.noesis.pt/flexdeploy/rest/v1/project?projectName=Oracle - DB" | jq '.[] | .projectId')
+        PRJID=$(curl -k -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -X GET "http://srvld20.noesis.pt/flexdeploy/rest/v1/project?projectName=OracleDB" | jq '.[] | .projectId')
          echo "PRJID=$PRJID"
 
 
-        STRMID=$(curl -k -s -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json"  http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/stream?streamName=main | jq '.[] | .streamId')
+        STRMID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json"  http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/stream?streamName=main | jq '.[] | .streamId')
          echo "STRMID=$STRMID"
 
 
-        BUILDENVID=$(curl -k -s -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
+        BUILDENVID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
 
           echo "BUILDENVID=$BUILDENVID"
 
         
-        DEPLOYENVID=$(curl -k -s -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
+        DEPLOYENVID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
       
           echo "ENVIRONMENT=$ENVIRONMENT"
 
@@ -54,7 +54,7 @@ jobs:
       - name: Build
         run: |
 
-        WFID=$(curl -k -s -u fd_admin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -d '{"environmentId":"'"$BUILDENVID"'", "streamId":"'"$STRMID"'"}' -X POST http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/build | jq '.workflowRequests[] | .workflowRequestId')
+        WFID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -d '{"environmentId":"'"$BUILDENVID"'", "streamId":"'"$STRMID"'"}' -X POST http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/build | jq '.workflowRequests[] | .workflowRequestId')
 
           CODE_BUILD=$(tail -n1 <<< "$WFID")
           echo "Workflow ID $WFID"
