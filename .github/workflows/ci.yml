@@ -20,25 +20,6 @@ jobs:
     # The type of runner that the job will run on
     runs-on: self-hosted
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      To execute a shell script on GitHub Actions, you can use the run keyword followed by the command you want to execute. Here’s an example:
-
-name: Example workflow
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -62,18 +43,18 @@ jobs:
       - name: Build
         run: |
 
-        WFID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -d '{"environmentId":"'"$BUILDENVID"'", "streamId":"'"$STRMID"'"}' -X POST http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/build | jq '.workflowRequests[] | .workflowRequestId')
+          WFID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -d '{"environmentId":"'"$BUILDENVID"'", "streamId":"'"$STRMID"'"}' -X POST http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/build | jq '.workflowRequests[] | .workflowRequestId')
 
           CODE_BUILD=$(tail -n1 <<< "$WFID")
           echo "Workflow ID $WFID"
 
 
-         ST=$(echo $STATUS | tr -d '"')
-         if [[ "$ST" == "FAILED" ]]; then
-         echo "Build Failed."; exit 1 
-         elif [[ "$ST" == "COMPLETED" ]]; then
-         echo "Built."; exit 0
-         fi
-          sleep 10
+           ST=$(echo $STATUS | tr -d '"')
+           if [[ "$ST" == "FAILED" ]]; then
+           echo "Build Failed."; exit 1 
+           elif [[ "$ST" == "COMPLETED" ]]; then
+           echo "Built."; exit 0
+           fi
+            sleep 10
 
 
