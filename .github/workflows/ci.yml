@@ -39,6 +39,7 @@ jobs:
           echo "DEPLOYENVID=$DEPLOYENVID"
           
           WFID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -d '{"environmentId":"'"$BUILDENVID"'", "streamId":"'"$STRMID"'"}' -X POST http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/build | jq '.workflowRequests[] | .workflowRequestId')
+          echo "Workflow ID $WFID"
           CODE_BUILD=$(tail -n1 <<< "$WFID")
           echo "Workflow ID $WFID"
           ST=$(echo $STATUS | tr -d '"')
