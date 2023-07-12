@@ -37,11 +37,7 @@ jobs:
 
           DEPLOYENVID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
           echo "DEPLOYENVID=$DEPLOYENVID"
-
-
-       # Runs a set of commands using the runners shell
-      - name: Build
-        run: |
+          
           WFID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -d '{"environmentId":"'"$BUILDENVID"'", "streamId":"'"$STRMID"'"}' -X POST http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/build | jq '.workflowRequests[] | .workflowRequestId')
           CODE_BUILD=$(tail -n1 <<< "$WFID")
           echo "Workflow ID $WFID"
@@ -52,5 +48,10 @@ jobs:
             echo "Built."; exit 0
           fi
           sleep 10
+
+       # Runs a set of commands using the runners shell
+      #- name: Build
+      #  run: |
+          
 
 
