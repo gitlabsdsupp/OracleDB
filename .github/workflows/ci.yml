@@ -26,27 +26,35 @@ jobs:
       - uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
-      - name: var_setup
+      To execute a shell script on GitHub Actions, you can use the run keyword followed by the command you want to execute. Here’s an example:
+
+name: Example workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: var setup
         run: |
+          PRJID=$(curl -k -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -X GET "http://srvld20.noesis.pt/flexdeploy/rest/v1/project?projectName=OracleDB" | jq '.[] | .projectId')
+          echo "PRJID=$PRJID"
 
-        PRJID=$(curl -k -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" -X GET "http://srvld20.noesis.pt/flexdeploy/rest/v1/project?projectName=OracleDB" | jq '.[] | .projectId')
-         echo "PRJID=$PRJID"
+          STRMID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json"  http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/stream?streamName=main | jq '.[] | .streamId')
+          echo "STRMID=$STRMID"
 
-
-        STRMID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json"  http://srvld20.noesis.pt/flexdeploy/rest/v1/project/$PRJID/stream?streamName=main | jq '.[] | .streamId')
-         echo "STRMID=$STRMID"
-
-
-        BUILDENVID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
-
+          BUILDENVID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
           echo "BUILDENVID=$BUILDENVID"
 
-        
-        DEPLOYENVID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
-      
-          echo "ENVIRONMENT=$ENVIRONMENT"
-
-
+          DEPLOYENVID=$(curl -k -s -u fdadmin:fz#n1vTeHRNQy^9C -H "Content-Type: application/json" http://srvld20.noesis.pt/flexdeploy/rest/v1/topology/environment?environmentName=Development | jq '.[] | .environmentId')
           echo "DEPLOYENVID=$DEPLOYENVID"
 
 
